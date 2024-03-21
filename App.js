@@ -6,6 +6,7 @@ import GasLevelScreen from './Views/NivelGas';
 import WarningScreen from './Views/Peligro';
 import LeakInstructionsScreen from './Views/Instrucciones';
 import ConfigScreen from './Views/Opciones';
+import RegisterScreen from './Views/Registro';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
         <Stack.Screen name="Aviso" component={WarningScreen} />
         <Stack.Screen name="Instrucciones" component={LeakInstructionsScreen} />
         <Stack.Screen name="Opciones" component={ConfigScreen} />
+        <Stack.Screen name="Registro" component={RegisterScreen} />
       </Stack.Navigator>
     </NavigationContainer>
 
