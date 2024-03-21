@@ -8,7 +8,7 @@ import Svg, {
   Stop,
 } from "react-native-svg";
 
-const GasLevelScreen = () => {
+const GasLevelScreen = ({ navigation }) => {
   // Valor del nivel de gas (entre 0 y 100, por ejemplo)
   const gasLevel = 75;
 
@@ -89,6 +89,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFD700",
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    backgroundColor: "#000000",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 100,
+    marginVertical: 20,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   statusText: {
     fontSize: 18,
