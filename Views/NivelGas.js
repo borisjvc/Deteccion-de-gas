@@ -5,7 +5,7 @@ import { SegmentedArc } from '@shipt/segmented-arc-for-react-native';
 const GasLevelScreen = ({ navigation }) => {
   const [showArcRanges, setShowArcRanges] = useState(false);
   const [fillValue, setFillValue] = useState(0);
-  let ws = new WebSocket('ws://localhost:8000');
+  let ws = new WebSocket('ws://localhost:8765');
 
   useEffect(() => {
     ws.addEventListener('open', () => {
