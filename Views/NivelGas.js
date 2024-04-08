@@ -1,84 +1,92 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Svg, {
-  Circle,
-  Text as SvgText,
-  Defs,
-  LinearGradient,
-  Stop,
-} from "react-native-svg";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { SegmentedArc } from '@shipt/segmented-arc-for-react-native';
 
 const GasLevelScreen = ({ navigation }) => {
-  // Valor del nivel de gas (entre 0 y 100, por ejemplo)
-  const gasLevel = 75;
+  const [showArcRanges, setShowArcRanges] = useState(false);
+  const [fillValue, setFillValue] = useState(0);
+  let ws = new WebSocket('ws://localhost:8000');
 
-  // Calcular el ángulo del medidor basado en el nivel de gas
-  const angle = (gasLevel / 100) * 180;
+  useEffect(() => {
+    ws.addEventListener('open', () => {
+      console.log('WebSocket connection opened');
+    });
+
+    ws.addEventListener('message', (event) => {
+      const gasValue = parseInt(event.data, 10);
+      const calculatedFillValue = (gasValue / 1000) * 100;
+      setFillValue(calculatedFillValue);
+    });
+
+    ws.addEventListener('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
+
+    ws.addEventListener('close', () => {
+      console.log('WebSocket connection closed');
+    });
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  const segments = [
+    {
+      scale: 0.2,
+      filledColor: '#78F5CA',
+      emptyColor: '#F2F3F5',
+      data: { label: 'Normal' }
+    },
+    {
+      scale: 0.2,
+      filledColor: '#F5E478',
+      emptyColor: '#F2F3F5',
+      data: { label: 'Bajo' }
+    },
+    {
+      scale: 0.2,
+      filledColor: '#FFC107',
+      emptyColor: '#F2F3F5',
+      data: { label: 'Medio' }
+    },
+    {
+      scale: 0.2,
+      filledColor: '#FF746E',
+      emptyColor: '#F2F3F5',
+      data: { label: 'Alto' }
+    },
+    {
+      scale: 0.2,
+      filledColor: '#FF0000',
+      emptyColor: '#F2F3F5',
+      data: { label: 'Muy alto' }
+    }
+  ];
+
+  const ranges = ['0', '300', '500', '800', '1000'];
+
+  const _handlePress = () => {
+    setShowArcRanges(!showArcRanges);
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.statusText}>Nivel de gas</Text>
-      <Svg height="300" width="300">
-        {/* Definir un degradado para el medidor */}
-        <Defs>
-          <LinearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="#FF0000" />
-            <Stop offset="1" stopColor="#00FF00" />
-          </LinearGradient>
-        </Defs>
-        {/* Círculo exterior */}
-        <Circle
-          cx="150"
-          cy="150"
-          r="120"
-          stroke="#000"
-          strokeWidth="2"
-          fill="none"
-        />
-        {/* Círculo del indicador */}
-        <Circle
-          cx="150"
-          cy="150"
-          r="100"
-          stroke="url(#grad)"
-          strokeWidth="20"
-          fill="none"
-          strokeDasharray={`${angle}, 180`}
-          transform="rotate(-90, 150, 150)"
-        />
-        {/* Texto del nivel de gas */}
-        <SvgText x="150" y="170" fill="#000" textAnchor="middle" fontSize="24">
-          {gasLevel}%
-        </SvgText>
-      </Svg>
-      <Text style={styles.statusText}>Estatus: Sin fuga</Text>
-      <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.8}
-        onPress={() => {
-          navigation.navigate("Aviso");
-        }}
+      <SegmentedArc
+        segments={segments}
+        fillValue={fillValue}
+        isAnimated={true}
+        animationDelay={1000}
+        showArcRanges={showArcRanges}
+        ranges={ranges}
       >
-        <Text style={styles.buttonText}>Aviso</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.8}
-        onPress={() => {
-          navigation.navigate("Instrucciones");
-        }}
-      >
-        <Text style={styles.buttonText}>Instrucciones</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.8}
-        onPress={() => {
-          navigation.navigate("Opciones");
-        }}
-      >
-        <Text style={styles.buttonText}>Opciones</Text>
-      </TouchableOpacity>
+        {metaData => (
+          <Pressable onPress={_handlePress} style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, paddingTop: 16, color: '#fff' }}>{metaData.lastFilledSegment.data.label}</Text>
+          </Pressable>
+        )}
+      </SegmentedArc>
     </View>
   );
 };
@@ -86,26 +94,14 @@ const GasLevelScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFD700",
+    backgroundColor: "#236",
     alignItems: "center",
     justifyContent: "center",
-  },
-  button: {
-    backgroundColor: "#000000",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 100,
-    marginVertical: 20,
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
   },
   statusText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#000000",
+    color: '#fff',
     marginTop: 20,
   },
 });

@@ -13,7 +13,7 @@ db_config = {
 }
 
 # Configura el puerto serial según tu configuración de Arduino
-arduino_serial = serial.Serial('COM4', 9600, timeout=1)
+arduino_serial = serial.Serial('COM3', 9600, timeout=1)
 
 def update_config(tipo, valor):
     try:
@@ -72,6 +72,7 @@ async def handle_arduino(websocket, path):
 
 async def start_server():
     async with websockets.serve(handle_arduino, "localhost", 8765):
+        print("Servidor WebSocket iniciado en el puerto 8765")
         await asyncio.Future()  # Ejecuta el servidor indefinidamente
 
 if __name__ == "__main__":

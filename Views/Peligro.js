@@ -19,7 +19,7 @@ const WarningScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFD700',
+    backgroundColor: "#236",
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   warningText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#fff',
     marginBottom: 20,
   },
   callButton: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   callButtonText: {
-    color: '#FFFFFF',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },

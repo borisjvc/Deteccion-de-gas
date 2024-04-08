@@ -18,7 +18,7 @@ const ConfigScreen = () => {
           step={0.05}
           onValueChange={value => setAlarmVolume(value)}
         />
-        <Text>{Math.round(alarmVolume * 100)}%</Text>
+        <Text style={styles.label}>{Math.round(alarmVolume * 100)}%</Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.label}>Umbral para alerta de fuga</Text>
@@ -30,7 +30,7 @@ const ConfigScreen = () => {
           step={1}
           onValueChange={value => setThreshold(value)}
         />
-        <Text>{threshold}</Text>
+        <Text style={styles.label}>{threshold}</Text>
       </View>
     </View>
   );
@@ -39,9 +39,9 @@ const ConfigScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#236",
     alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
@@ -51,9 +51,11 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
+    
   },
   label: {
     fontSize: 18,
+    color: '#fff',
     marginBottom: 10,
   },
 });

@@ -30,7 +30,7 @@ const LeakInstructionsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFD700",
+    backgroundColor: "#236",
     padding: 20,
   },
   title: {
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
   },
   instructions: {
     fontSize: 18,
+    color: '#fff',
     marginBottom: 10,
   },
 });
