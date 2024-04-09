@@ -14,7 +14,7 @@ db_config = {
 
 # Configura el puerto serial según tu configuración de Arduino
 arduino_serial = "a"
-
+connected_clients = set()
 def update_config(tipo, valor):
     try:
         conn = mysql.connector.connect(**db_config)
@@ -50,7 +50,9 @@ def get_sensor_data():
         cursor.close()
         conn.close()
 
+
 async def handle_arduino(websocket, path):
+    connected_clients.add(websocket)
     status = get_sensor_data()
     await websocket.send(json.dumps(status))  # Enviar estado actual al cliente al conectarse
     async for message in websocket:
@@ -68,7 +70,10 @@ async def handle_arduino(websocket, path):
             if 'gas' in data:
                 update_config(tipo='nivel_gas', valor=data['gas'])
                 #arduino_serial.write(f"2 {data['alarmOff']}".encode())
-            await websocket.send(message)  # Opcional: Confirmar el cambio al cliente
+            status = get_sensor_data()
+            print(connected_clients)
+            for client in connected_clients:
+                await client.send(json.dumps(status))
         except json.JSONDecodeError:
             print(f"Error al decodificar el mensaje: {message}")
 
