@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { SegmentedArc } from '@shipt/segmented-arc-for-react-native';
-import WS from 'react-native-websocket'
 
 const GasLevelScreen = ({ navigation }) => {
   const [showArcRanges, setShowArcRanges] = useState(false);
   const [fillValue, setFillValue] = useState(0);
-  const ws = new WebSocket('ws://localhost:8765');
+  const ws = new WebSocket('ws://localhost:3000');
 
   useEffect(() => {
-    ws.addEventListener('open', () => {
-      console.log('WebSocket connection opened');
+    ws.addEventListener('open', (event) => {
+      console.log('WebSocket connection opened', event);
     });
 
     ws.addEventListener('message', (event) => {
@@ -20,8 +19,8 @@ const GasLevelScreen = ({ navigation }) => {
       setFillValue(calculatedFillValue);
     });
 
-    ws.addEventListener('close', () => {
-      console.log('WebSocket connection closed');
+    ws.addEventListener('close', (event) => {
+      console.log('WebSocket connection closed', event);
     });
 
     return () => {
@@ -75,7 +74,7 @@ const GasLevelScreen = ({ navigation }) => {
         segments={segments}
         fillValue={fillValue}
         isAnimated={true}
-        animationDelay={1000}
+        animationDelay={500}
         showArcRanges={showArcRanges}
         ranges={ranges}
       >
@@ -85,7 +84,6 @@ const GasLevelScreen = ({ navigation }) => {
           </Pressable>
         )}
       </SegmentedArc>
-      <Text style={{ fontSize: 16, paddingTop: 16, color: '#fff' }}>{text}</Text>
     </View>
   );
 };

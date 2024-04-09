@@ -6,7 +6,7 @@
   </body>
   <script>
 
-var ws = new WebSocket("ws://localhost:8765");
+var ws = new WebSocket("ws://localhost:3000");
     
     ws.onopen = function () {
       console.log("Conexión establecida.");
@@ -22,7 +22,7 @@ var ws = new WebSocket("ws://localhost:8765");
 
 document.getElementById('myButton').onclick = function () {
   const data = {
-        threshold: 50 // Cambia este valor según lo que necesites
+        gas: 500 // Cambia este valor según lo que necesites
     };
     ws.send(JSON.stringify(data));
 };

@@ -51,31 +51,30 @@ def get_sensor_data():
         conn.close()
 
 async def handle_arduino(websocket, path):
-    print("datos")
     status = get_sensor_data()
     await websocket.send(json.dumps(status))  # Enviar estado actual al cliente al conectarse
-
     async for message in websocket:
-        print(message)
         try:
             data = json.loads(message)
-            print(data)
             if 'alarmVolume' in data:
                 update_config(tipo='volumen', valor=data['alarmVolume'])
-                arduino_serial.write(f"0 {data['alarmVolume']}".encode())
+                #arduino_serial.write(f"0 {data['alarmVolume']}".encode())
             if 'threshold' in data:
                 update_config(tipo='umbral', valor=data['threshold'])
-                arduino_serial.write(f"1 {data['threshold']}".encode())
+                #arduino_serial.write(f"1 {data['threshold']}".encode())
             if 'alarmOff' in data:
                 update_config(tipo='alarma', valor=data['alarmOff'])
-                arduino_serial.write(f"2 {data['alarmOff']}".encode())
+                #arduino_serial.write(f"2 {data['alarmOff']}".encode())
+            if 'gas' in data:
+                update_config(tipo='nivel_gas', valor=data['gas'])
+                #arduino_serial.write(f"2 {data['alarmOff']}".encode())
             await websocket.send(message)  # Opcional: Confirmar el cambio al cliente
         except json.JSONDecodeError:
             print(f"Error al decodificar el mensaje: {message}")
 
 async def start_server():
-    async with websockets.serve(handle_arduino, "localhost", 8765):
-        print("Servidor WebSocket iniciado en el puerto 8765")
+    async with websockets.serve(handle_arduino, "0.0.0.0", 3000):
+        print("Servidor WebSocket iniciado en el puerto 3000")
         await asyncio.Future()  # Ejecuta el servidor indefinidamente
 
 if __name__ == "__main__":
