@@ -3,8 +3,38 @@ import { View, Text, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 
 const ConfigScreen = () => {
-  const [alarmVolume, setAlarmVolume] = useState(0.5);
+   const [alarmVolume, setAlarmVolume] = useState(0.5);
   const [threshold, setThreshold] = useState(50);
+  const [webSocket, setWebSocket] = useState(null);
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:3000");
+
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+      setWebSocket(ws);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (webSocket) {
+      webSocket.send(JSON.stringify({ alarmVolume }));
+    }
+  }, [alarmVolume, webSocket]);
+
+  useEffect(() => {
+    if (webSocket) {
+      webSocket.send(JSON.stringify({ threshold }));
+    }
+  }, [threshold, webSocket]);
 
   return (
     <View style={styles.container}>
