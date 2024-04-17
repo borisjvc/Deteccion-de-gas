@@ -65,13 +65,14 @@ def get_sensor_data():
         conn.close()
 
 def arduino_data():
-    arduino_serial.write(b'get_state\n')  # Solicita el estado actual
-    time.sleep(0.1)  # Da tiempo al Arduino para responder
-    if arduino_serial.inWaiting() > 0:
-        state = arduino_serial.readline().decode().strip()
-        update_data(state)
-        return get_sensor_data()
-    return "0"  # Devuelve un estado predeterminado si no hay respuesta
+    while True:
+        arduino_serial.write(b'get_state\n')  # Solicita el estado actual
+        time.sleep(0.1)  # Da tiempo al Arduino para responder
+        if arduino_serial.inWaiting() > 0:
+            state = arduino_serial.readline().decode().strip()
+            update_data(state)
+            return get_sensor_data()
+        
 
 async def handle_arduino(websocket, path):
     connected_clients.add(websocket)
