@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 const GasLevelScreen = ({ navigation }) => {
   const [fillValue, setFillValue] = useState(0);
   const ws = new WebSocket("ws://localhost:3000");
@@ -15,6 +15,9 @@ const GasLevelScreen = ({ navigation }) => {
       const gasValue = parseInt(data.nivel_gas, 10);
       const calculatedFillValue = (gasValue / 1000) * 100;
       setFillValue(calculatedFillValue);
+      if (fillValue >= data.threshold) {
+        navigation.navigate("Aviso");
+      }
     });
 
     ws.addEventListener("close", (event) => {
@@ -25,7 +28,6 @@ const GasLevelScreen = ({ navigation }) => {
       ws.close();
     };
   }, []);
-
 
   return (
     <View style={styles.container}>
