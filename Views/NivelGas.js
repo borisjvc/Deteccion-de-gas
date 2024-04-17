@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 const GasLevelScreen = ({ navigation }) => {
   const [fillValue, setFillValue] = useState(0);
+  const [progressColor, setProgressColor] = useState("#00e0ff"); // Color inicial
   const ws = new WebSocket("ws://localhost:3000");
 
   useEffect(() => {
@@ -14,6 +15,12 @@ const GasLevelScreen = ({ navigation }) => {
       const data = JSON.parse(event.data);
       const gasValue = parseInt(data.nivel_gas, 10);
       const calculatedFillValue = (gasValue / 1000) * 100;
+
+      const green = Math.floor(255 * (1 - fillValue / 100));
+      const red = Math.floor(255 * (fillValue / 100));
+      const color = `rgb(${red}, ${green}, 0)`;
+      setProgressColor(color);
+
       setFillValue(calculatedFillValue);
       if (fillValue >= data.threshold) {
         navigation.navigate("Aviso");
@@ -38,7 +45,7 @@ const GasLevelScreen = ({ navigation }) => {
         fill={fillValue}
         arcSweepAngle={180}
         rotation={-90}
-        tintColor="#00e0ff"
+        tintColor={progressColor}
         onAnimationComplete={() => console.log("onAnimationComplete")}
         backgroundColor="#3d5875"
       />
